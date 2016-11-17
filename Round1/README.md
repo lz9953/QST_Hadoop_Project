@@ -6,7 +6,6 @@
     sudo apt-get install openjdk
     配置环境变量  sudo vim etc/profile 在最后添加
     export JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk
-  c.数据准备
     exportCLASSPATH=.:$JAVA_HOME/jre/lib/rt.jar:$JAVA_HOME/jre/lib/dt.jar:$JAVA_HOME/jre/lib/tools.jar            
     export PATH=$PATH:$JAVA_HOME/bin
   c.修改各机器 主机名sudo vim /etc/hostname 主机设为master 其他设为slaven
@@ -125,8 +124,11 @@ hadoop安装
           以读出来的IP 为 key 任意值为value，比如 value为“1”
         2.reduce 接受map传输的数据 ，value指定为map的key。建一个list用来存储value，因为在map阶段的key是自动去重，所以list的size为访问用户的数量
     b.每天访问top10的show统计
-        1.map从hbase中读取一天的数据 ，
-           
+        1.对数据按行进行正则匹配，只读取有“show”的行。通过正则匹配切分出 showid  以showid为key  “1”为value 传给reduce 
+        2.reduce对showid 进行count得出 每条showid的访问数量。 按数量倒序取出前10个showid+count；
+    c.留存
+        1.map：对今天的数据 去重读取ip，以ip位key 1为value  在对昨天的数据去重读取ip，以ip位key，1为value 。
+        2.reduce： 对 map 过来的 key 做count count为2 的IP即为留存用户 
     
     
     
